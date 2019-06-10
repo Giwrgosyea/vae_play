@@ -113,10 +113,9 @@ vae.compile(optimizer='adam')
 vae.summary()
 plot_model(vae, to_file='vae_cnn.png', show_shapes=True)
 
-vae.fit(x_train, y_train,
+vae.fit(x_train, x_train,
               batch_size=batch_size,
               epochs=epochs,
-              validation_data=(x_test, y_test),
               shuffle=True)
 
 
