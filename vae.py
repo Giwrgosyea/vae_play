@@ -2,7 +2,6 @@ from tensorflow.python.keras.models import Model, Sequential
 from tensorflow.python.keras.layers import Conv2D, Activation, Dense, Lambda, Input, MaxPooling2D, Dropout, Flatten, Reshape, UpSampling2D, Concatenate
 from tensorflow.python.keras import backend as K
 from tensorflow.python.keras.datasets import cifar10
-from tensorflow.python.keras.losses import mse
 from tensorflow.python.keras.utils import plot_model
 import numpy as np
 from tensorflow.python.keras.losses import mean_absolute_error
