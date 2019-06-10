@@ -76,13 +76,11 @@ plot_model(encoder, to_file='vae_cnn_encoder.png', show_shapes=True)
 # build decoder model
 latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
 x = Dense(intermediate_dim, activation='relu')(latent_inputs)
-outputs = Dense(original_dim, activation='sigmoid')(x)
-
 outputs = Conv2DTranspose(filters=3,
                           kernel_size=(3,3),
                           activation='relu',
                           padding='same',
-                          name='decoder_output')(x)
+                          name='decoder_output')(outputs)
 
 # instantiate decoder model
 decoder = Model(latent_inputs, outputs, name='decoder')
