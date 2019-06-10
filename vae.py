@@ -49,7 +49,7 @@ inputs = Input(shape=(x_train.shape[1],x_train.shape[2],x_train.shape[3]), name=
 x = inputs
 
 x = Conv2D(filters=3,
-               kernel_size=(3,3)
+               kernel_size=(3,3),
                activation='relu',
                strides=2,
                padding='same')(x)
