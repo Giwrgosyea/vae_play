@@ -28,7 +28,7 @@ filters = 16
 latent_dim = 2
 epochs = 30
 num_classes = 10
-intermediate_dim = 512
+intermediate_dim = 32
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -50,7 +50,7 @@ y_test = to_categorical(y_test, num_classes)
 inputs = Input(shape=(x_train.shape[1],x_train.shape[2],x_train.shape[3]), name='encoder_input')
 x = inputs
 
-x = Conv2D(filters=3,
+x = Conv2D(filters=64,
                kernel_size=(3,3),
                activation='relu',
                strides=2,
@@ -75,12 +75,13 @@ plot_model(encoder, to_file='vae_cnn_encoder.png', show_shapes=True)
 
 # build decoder model
 latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-x = Dense(intermediate_dim, activation='relu')(latent_inputs)
-outputs = Conv2DTranspose(filters=3,
+
+
+outputs = Conv2DTranspose(filters=64,
                           kernel_size=(3,3),
                           activation='relu',
                           padding='same',
-                          name='decoder_output')(x)
+                          name='decoder_output')(latent_inputs)
 
 # instantiate decoder model
 decoder = Model(latent_inputs, outputs, name='decoder')
