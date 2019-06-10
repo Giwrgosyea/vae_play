@@ -2,7 +2,9 @@ from tensorflow.python.keras.models import Model, Sequential
 from tensorflow.python.keras.layers import Conv2D, Activation, Dense, Lambda, Input, MaxPooling2D, Dropout, Flatten, Reshape, UpSampling2D, Concatenate
 from tensorflow.python.keras import backend as K
 from tensorflow.python.keras.datasets import cifar10
-
+from keras.losses import mse
+from keras.utils import plot_model
+import numpy as np
 
 
 
@@ -24,15 +26,15 @@ def sampling(args):
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+print('x_train shape:', x_train.shape)
+print(x_train.shape[0], 'train samples')
+print(x_test.shape[0], 'test samples')
 
-image_size = x_train.shape[1]
-x_train = np.reshape(x_train, [-1, image_size, image_size, 1])
-x_test = np.reshape(x_test, [-1, image_size, image_size, 1])
-x_train = x_train.astype('float32') / 255
-x_test = x_test.astype('float32') / 255
+# Convert class vectors to binary class matrices.
+y_train = keras.utils.to_categorical(y_train, num_classes)
+y_test = keras.utils.to_categorical(y_test, num_classes)
 
 # network parameters
-input_shape = (image_size, image_size, 1)
 batch_size = 128
 kernel_size = 3
 filters = 16
@@ -41,7 +43,7 @@ epochs = 30
 
 # VAE model = encoder + decoder
 # build encoder model
-inputs = Input(shape=input_shape, name='encoder_input')
+inputs = Input(shape=x_train.shape[1:], name='encoder_input')
 x = inputs
 for i in range(2):
     filters *= 2
