@@ -60,7 +60,7 @@ for i in range(2):
 
 # shape info needed to build decoder model
 shape = K.int_shape(x)
-
+print("shape",shape)
 # generate latent vector Q(z|X)
 x = Flatten()(x)
 x = Dense(16, activation='relu')(x)
