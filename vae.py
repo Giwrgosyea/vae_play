@@ -28,13 +28,13 @@ filters = 16
 latent_dim = 2
 epochs = 30
 num_classes = 10
-image_size = x_train.shape[1]
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
+image_size = x_train.shape[1]
 
 # Convert class vectors to binary class matrices.
 y_train = to_categorical(y_train, num_classes)
