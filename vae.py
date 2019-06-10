@@ -108,7 +108,7 @@ if __name__ == '__main__':
  
 
     # VAE loss = mse_loss or xent_loss + kl_loss
-    reconstruction_loss = mse(K.flatten(inputs), K.flatten(outputs))
+    reconstruction_loss = mean_absolute_error(K.flatten(inputs), K.flatten(outputs))
    
 
     reconstruction_loss *= image_size * image_size
