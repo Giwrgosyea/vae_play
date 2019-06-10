@@ -28,6 +28,7 @@ filters = 16
 latent_dim = 2
 epochs = 30
 num_classes = 10
+intermediate_dim = 512
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -35,6 +36,7 @@ print('x_train shape:', x_train.shape)
 print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
 image_size = x_train.shape[1]
+original_dim=x_train.shape[1]*x_train.shape[1]
 
 # Convert class vectors to binary class matrices.
 y_train = to_categorical(y_train, num_classes)
@@ -55,7 +57,6 @@ x = Conv2D(filters=3,
                padding='same')(x)
 
 # shape info needed to build decoder model
-shape = K.int_shape(x)
 
 # generate latent vector Q(z|X)
 x = Flatten()(x)
@@ -74,8 +75,8 @@ plot_model(encoder, to_file='vae_cnn_encoder.png', show_shapes=True)
 
 # build decoder model
 latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-x = Dense(shape[1] * shape[2] * shape[3], activation='relu')(latent_inputs)
-x = Reshape((shape[1], shape[2], shape[3]))(x)
+x = Dense(intermediate_dim, activation='relu')(latent_inputs)
+outputs = Dense(original_dim, activation='sigmoid')(x)
 
 outputs = Conv2DTranspose(filters=3,
                           kernel_size=(3,3),
