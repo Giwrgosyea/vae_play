@@ -5,7 +5,7 @@ from tensorflow.python.keras.datasets import cifar10
 from tensorflow.python.keras.utils import plot_model
 import numpy as np
 from tensorflow.python.keras.losses import mean_absolute_error
-
+from tensorflow.python.keras.utils import to_categorical
 
 def sampling(args):
     """Reparameterization trick by sampling fr an isotropic unit Gaussian.
@@ -22,7 +22,12 @@ def sampling(args):
     epsilon = K.random_normal(shape=(batch, dim))
     return z_mean + K.exp(0.5 * z_log_var) * epsilon
 
-
+batch_size = 128
+kernel_size = 3
+filters = 16
+latent_dim = 2
+epochs = 30
+num_classes = 10
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 print('x_train shape:', x_train.shape)
@@ -30,15 +35,11 @@ print(x_train.shape[0], 'train samples')
 print(x_test.shape[0], 'test samples')
 
 # Convert class vectors to binary class matrices.
-y_train = tensorflow.python.keras.utils.to_categorical(y_train, num_classes)
-y_test = tensorflow.python.keras.utils.to_categorical(y_test, num_classes)
+y_train = to_categorical(y_train, num_classes)
+y_test = to_categorical(y_test, num_classes)
 
 # network parameters
-batch_size = 128
-kernel_size = 3
-filters = 16
-latent_dim = 2
-epochs = 30
+
 
 # VAE model = encoder + decoder
 # build encoder model
