@@ -5,7 +5,7 @@ from tensorflow.python.keras.datasets import cifar10
 from tensorflow.python.keras.losses import mse
 from tensorflow.python.keras.utils import plot_model
 import numpy as np
-
+from tensorflow.python.eras.losses import mse,
 
 
 def sampling(args):
