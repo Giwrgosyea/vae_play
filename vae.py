@@ -28,6 +28,8 @@ filters = 16
 latent_dim = 2
 epochs = 30
 num_classes = 10
+image_size = x_train.shape[1]
+
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 print('x_train shape:', x_train.shape)
