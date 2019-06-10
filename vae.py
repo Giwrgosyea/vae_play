@@ -45,7 +45,7 @@ y_test = to_categorical(y_test, num_classes)
 
 # VAE model = encoder + decoder
 # build encoder model
-inputs = Input(shape=x_train.shape[1:], name='encoder_input')
+inputs = Input(shape=(x_train[1],x_train[2],x_train[3]), name='encoder_input')
 x = inputs
 for i in range(2):
     filters *= 2
@@ -103,7 +103,7 @@ vae = Model(inputs, outputs, name='vae')
 
 
 reconstruction_loss = mean_absolute_error(K.flatten(inputs), K.flatten(outputs))
-reconstruction_loss *= image_size * image_size
+reconstruction_loss *= x_train[1] * x_train[1]
 kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
 kl_loss = K.sum(kl_loss, axis=-1)
 kl_loss *= -0.5
