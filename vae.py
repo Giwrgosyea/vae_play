@@ -57,7 +57,8 @@ x = Conv2D(filters=64,
                padding='same')(x)
 
 # shape info needed to build decoder model
-
+shape = K.int_shape(x)
+print("->",shape)
 # generate latent vector Q(z|X)
 x = Flatten()(x)
 x = Dense(16, activation='relu')(x)
@@ -75,7 +76,8 @@ plot_model(encoder, to_file='vae_cnn_encoder.png', show_shapes=True)
 
 # build decoder model
 latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-
+x = Dense(shape[1] * shape[2] * shape[3], activation='relu')(latent_inputs)
+x = Reshape((shape[1], shape[2], shape[3]))(x)
 
 outputs = Conv2DTranspose(filters=64,
                           kernel_size=(3,3),
