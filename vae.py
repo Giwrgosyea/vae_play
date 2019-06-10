@@ -32,33 +32,35 @@ intermediate_dim = 32
 
 
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-print('x_train shape:', x_train.shape)
-print(x_train.shape[0], 'train samples')
-print(x_test.shape[0], 'test samples')
 image_size = x_train.shape[1]
-original_dim=x_train.shape[1]*x_train.shape[1]
-
-# Convert class vectors to binary class matrices.
-y_train = to_categorical(y_train, num_classes)
-y_test = to_categorical(y_test, num_classes)
+x_train = np.reshape(x_train, [-1, image_size, image_size, 3])
+x_test = np.reshape(x_test, [-1, image_size, image_size, 3])
+x_train = x_train.astype('float32') / 255
+x_test = x_test.astype('float32') / 255
 
 # network parameters
-
+input_shape = (image_size, image_size, 3)
+batch_size = 128
+kernel_size = 3
+filters = 16
+latent_dim = 2
+epochs = 30
 
 # VAE model = encoder + decoder
 # build encoder model
-inputs = Input(shape=(x_train.shape[1],x_train.shape[2],x_train.shape[3]), name='encoder_input')
+inputs = Input(shape=input_shape, name='encoder_input')
 x = inputs
-
-x = Conv2D(filters=64,
-               kernel_size=(3,3),
+for i in range(2):
+    filters *= 2
+    x = Conv2D(filters=filters,
+               kernel_size=kernel_size,
                activation='relu',
                strides=2,
                padding='same')(x)
 
 # shape info needed to build decoder model
 shape = K.int_shape(x)
-print("->",shape)
+
 # generate latent vector Q(z|X)
 x = Flatten()(x)
 x = Dense(16, activation='relu')(x)
@@ -78,15 +80,18 @@ plot_model(encoder, to_file='vae_cnn_encoder.png', show_shapes=True)
 latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
 x = Dense(shape[1] * shape[2] * shape[3], activation='relu')(latent_inputs)
 x = Reshape((shape[1], shape[2], shape[3]))(x)
-x = Conv2DTranspose(filters=64,
-                        kernel_size=(3,3),
+
+for i in range(2):
+    x = Conv2DTranspose(filters=filters,
+                        kernel_size=kernel_size,
                         activation='relu',
                         strides=2,
                         padding='same')(x)
+    filters //= 2
 
 outputs = Conv2DTranspose(filters=1,
-                          kernel_size=(3,3),
-                          activation='relu',
+                          kernel_size=kernel_size,
+                          activation='sigmoid',
                           padding='same',
                           name='decoder_output')(x)
 
@@ -99,22 +104,29 @@ plot_model(decoder, to_file='vae_cnn_decoder.png', show_shapes=True)
 outputs = decoder(encoder(inputs)[2])
 vae = Model(inputs, outputs, name='vae')
 
+if __name__ == '__main__':
+ 
 
-reconstruction_loss = mean_absolute_error(K.flatten(inputs), K.flatten(outputs))
-reconstruction_loss *= x_train[1] * x_train[1] 
-kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
-kl_loss = K.sum(kl_loss, axis=-1)
-kl_loss *= -0.5
-vae_loss = K.mean(reconstruction_loss + kl_loss)
-vae.add_loss(vae_loss)
-vae.compile(optimizer='adam')
-vae.summary()
-plot_model(vae, to_file='vae_cnn.png', show_shapes=True)
+    # VAE loss = mse_loss or xent_loss + kl_loss
+    reconstruction_loss = mse(K.flatten(inputs), K.flatten(outputs))
+   
 
-vae.fit(x_train,
-              batch_size=batch_size,
-              epochs=epochs,
-              shuffle=True)
+    reconstruction_loss *= image_size * image_size
+    kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
+    kl_loss = K.sum(kl_loss, axis=-1)
+    kl_loss *= -0.5
+    vae_loss = K.mean(reconstruction_loss + kl_loss)
+    vae.add_loss(vae_loss)
+    vae.compile(optimizer='rmsprop')
+    vae.summary()
+    plot_model(vae, to_file='vae_cnn.png', show_shapes=True)
+
+    
+        # train the autoencoder
+    vae.fit(x_train,epochs=epochs,batch_size=batch_size,validation_data=(x_test, None))
+    
+
+    plot_results(models, data, batch_size=batch_size, model_name="vae_cnn")
 
 
 
