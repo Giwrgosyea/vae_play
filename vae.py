@@ -80,7 +80,7 @@ outputs = Conv2DTranspose(filters=3,
                           kernel_size=(3,3),
                           activation='relu',
                           padding='same',
-                          name='decoder_output')(outputs)
+                          name='decoder_output')(x)
 
 # instantiate decoder model
 decoder = Model(latent_inputs, outputs, name='decoder')
