@@ -45,7 +45,7 @@ y_test = to_categorical(y_test, num_classes)
 
 # VAE model = encoder + decoder
 # build encoder model
-inputs = Input(shape=(x_train[1],x_train[2],x_train[3]), name='encoder_input')
+inputs = Input(shape=(x_train.shape[1],x_train.shape[2],x_train.shape[3]), name='encoder_input')
 x = inputs
 for i in range(2):
     filters *= 2
