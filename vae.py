@@ -5,7 +5,7 @@ from tensorflow.python.keras.datasets import cifar10
 from tensorflow.python.keras.losses import mse
 from tensorflow.python.keras.utils import plot_model
 import numpy as np
-from tensorflow.python.keras.losses import mse
+from tensorflow.python.keras.losses import mean_absolute_error
 
 
 def sampling(args):
@@ -100,7 +100,7 @@ outputs = decoder(encoder(inputs)[2])
 vae = Model(inputs, outputs, name='vae')
 
 
-reconstruction_loss = mse(K.flatten(inputs), K.flatten(outputs))
+reconstruction_loss = mean_absolute_error(K.flatten(inputs), K.flatten(outputs))
 reconstruction_loss *= image_size * image_size
 kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
 kl_loss = K.sum(kl_loss, axis=-1)
