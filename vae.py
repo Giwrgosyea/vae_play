@@ -101,7 +101,7 @@ vae = Model(inputs, outputs, name='vae')
 
 
 reconstruction_loss = mean_absolute_error(K.flatten(inputs), K.flatten(outputs))
-reconstruction_loss *= x_train[1] * x_train[1] * 3
+reconstruction_loss *= x_train[1] * x_train[1] 
 kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
 kl_loss = K.sum(kl_loss, axis=-1)
 kl_loss *= -0.5
